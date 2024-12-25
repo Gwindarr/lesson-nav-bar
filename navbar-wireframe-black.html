@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Thai in 2 Weeks</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #0c0c0c;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Dark Sidebar */
+        .sidebar {
+            width: 300px;
+            background: #1a1a1a;
+            border-right: 1px solid #2d2d2d;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #2d2d2d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-group {
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-button {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            color: #a3a3a3;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .control-button:hover {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        /* Search Area */
+        .search-container {
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #2d2d2d;
+            border: none;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        /* Navigation Area */
+        .nav-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .module-header {
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #a3a3a3;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-header:hover {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .module-number {
+            width: 24px;
+            height: 24px;
+            background: #2d2d2d;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .module-title {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .nav-items {
+            display: none;
+        }
+
+        .nav-items.expanded {
+            display: block;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.5rem 1rem 0.5rem 3rem;
+            color: #d4d4d4;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-item.status-new {
+            background: transparent;
+        }
+        
+            .nav-item.status-learning {
+                background: rgba(59, 130, 246, 0.1);
+            }
+            
+            .nav-item.status-known {
+                background: rgba(34, 197, 94, 0.1);
+            }.nav-item.active {
+                background: #2d2d2d;
+                color: #ffffff;
+            }
+
+        .nav-item:hover {
+            background: #2d2d2d;
+            color: #3b82f6;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 300px;
+            flex: 1;
+            background: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-300px);
+                z-index: 50;
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+
+            .overlay.visible {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Dark Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="text-xl font-semibold text-white">Read Thai in 2 Weeks</h1>
+            </div>
+
+            <div class="control-group">
+                <button class="control-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </button>
+                <button class="control-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="search-container">
+                <input type="text" 
+                       placeholder="Search lessons..." 
+                       class="search-input focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+
+            <div class="nav-section">
+                <!-- Section 1: Basics -->
+                <div class="module-group">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-number">1</div>
+                        <div class="module-title">Getting Started</div>
+                        <svg class="w-5 h-5 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="nav-items expanded">
+                        <a href="#" class="nav-item">Introduction</a>
+                        <a href="#" class="nav-item">Thai Script: First Look</a>
+                        <a href="#" class="nav-item active">Middle Class Consonants</a>
+                        <a href="#" class="nav-item">The Middle Class Story</a>
+                        <a href="#" class="nav-item">Say Ahhh</a>
+                    </div>
+                </div>
+
+                <!-- Section 2: Consonants -->
+                <div class="module-group">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-number">2</div>
+                        <div class="module-title">Consonants</div>
+                        <svg class="w-5 h-5 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item">My First Vowel</a>
+                        <a href="#" class="nav-item">Hard Endings</a>
+                        <a href="#" class="nav-item">อ - The Placeholder</a>
+                        <a href="#" class="nav-item">Soft Endings</a>
+                        <a href="#" class="nav-item">Invisible Vowels</a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Tone Marks -->
+                <div class="module-group">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-number">3</div>
+                        <div class="module-title">Tone Marks</div>
+                        <svg class="w-5 h-5 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item">First Tone Mark</a>
+                        <a href="#" class="nav-item">Vowels, So Many Vowels</a>
+                        <a href="#" class="nav-item">The Second Tone Mark</a>
+                        <a href="#" class="nav-item">Long and Short Vowels</a>
+                        <a href="#" class="nav-item">Low Class Letters: ว and ฮ</a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Practice -->
+                <div class="module-group">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-number">4</div>
+                        <div class="module-title">Practice</div>
+                        <svg class="w-5 h-5 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item">Consonant Clusters</a>
+                        <a href="#" class="nav-item">The Sounds of Silence</a>
+                        <a href="#" class="nav-item">Middle Class Tone Rules</a>
+                        <a href="#" class="nav-item">Vocabulary 1</a>
+                        <a href="#" class="nav-item">Quiz 1A</a>
+                    </div>
+                </div>
+
+                <!-- Section 5: Advanced -->
+                <div class="module-group">
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-number">5</div>
+                        <div class="module-title">Advanced</div>
+                        <svg class="w-5 h-5 transform transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                    <div class="nav-items">
+                        <a href="#" class="nav-item">Quiz 1B</a>
+                        <a href="#" class="nav-item">High Class Consonants</a>
+                        <a href="#" class="nav-item">High Class Tone Rules</a>
+                        <a href="#" class="nav-item">Gurgling Vowels</a>
+                        <a href="#" class="nav-item">Complex Vowels</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Your lesson content here -->
+        </main>
+
+        <!-- Mobile Overlay -->
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    </div>
+
+    <script>
+        function toggleModule(header) {
+            const items = header.nextElementSibling;
+            const arrow = header.querySelector('svg');
+            items.classList.toggle('expanded');
+            arrow.style.transform = items.classList.contains('expanded') ? 'rotate(180deg)' : '';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('visible');
+            overlay.classList.toggle('visible');
+        }
+    </script>
+</body>
+</html>
